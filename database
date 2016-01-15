@@ -1,0 +1,58 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema collegiate
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema collegiate
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `collegiate` DEFAULT CHARACTER SET utf8 ;
+USE `collegiate` ;
+
+-- -----------------------------------------------------
+-- Table `collegiate`.`usuario`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `collegiate`.`usuario` (
+  `matricula` INT(10) NOT NULL,
+  `nome` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(50) NOT NULL,
+  `senha` VARCHAR(8) NOT NULL,
+  `descricao` ENUM('aluno', 'secretaria', 'coordenacao') NOT NULL,
+  PRIMARY KEY (`matricula`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `collegiate`.`requisicao`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `collegiate`.`requisicao` (
+  `numero` INT(25) NOT NULL AUTO_INCREMENT,
+  `justificativa` TEXT NOT NULL,
+  `estado` VARCHAR(25) NOT NULL,
+  `anexo` VARCHAR(100) NULL DEFAULT NULL,
+  `dataPedido` DATETIME not NULL,
+  `dataResposta` DATETIME not NULL,
+  `resposta` ENUM('Deferido', 'Indeferido') not NULL,
+  `tipo` ENUM('Quebra Projeto 1', 'Quebra Projeto 2', 'Quebra de Redes 2', 'Estágio 20', 'Estágio 30', 'Prazo máximo', 'Trancamento do período', 'Trancamento de disciplina') not NULL,
+  `matricula` INT(10) not NULL,
+  PRIMARY KEY (`numero`),
+  INDEX `fk_mat` (`matricula` ASC),
+  CONSTRAINT `fk_mat`
+    FOREIGN KEY (`matricula`)
+    REFERENCES `collegiate`.`usuario` (`matricula`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
