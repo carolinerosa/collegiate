@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `collegiate-final`.`usuario` (
   `matricula` INT(10) NOT NULL,
   `nome` VARCHAR(50) NOT NULL,
   `email` VARCHAR(50) NOT NULL,
-  `credencial` ENUM('aluno', 'secretaria', 'coordenação') NOT NULL,
+  `credencial` ENUM('aluno', 'coord') NOT NULL,
   `senha` VARCHAR(10) NOT NULL,
   PRIMARY KEY (`matricula`),
   UNIQUE INDEX `matricula_UNIQUE` (`matricula` ASC))
@@ -50,8 +50,8 @@ CREATE TABLE IF NOT EXISTS `collegiate-final`.`requisicao` (
   `codEst` INT NOT NULL,
   `justificativa` TEXT NOT NULL,
   `estado` ENUM('Deferido', 'Indeferido', 'Não votado', 'Em análise') NOT NULL DEFAULT 'Em análise',
-  `dataPedido` DATE NOT NULL DEFAULT '1000-01-01',
-  `dataResposta` DATE NOT NULL DEFAULT '1000-01-01',
+  `dataPedido` DATE NOT NULL DEFAULT '1111-11-11',
+  `dataResposta` DATE NULL,
   `historico` TEXT NOT NULL,
   `cartaOrientador` TEXT NULL,
   PRIMARY KEY (`numRequi`),
@@ -77,60 +77,11 @@ USE `collegiate-final`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `collegiate-final`.`requisicao_AFTER_INSERT` AFTER INSERT ON `requisicao` FOR EACH ROW
 BEGIN
 
-declare codigo, valor, cod, posit, total int;
-declare positivo cursor for select codEst, count(*) from requisicao where requisicao.estado = 'Deferido' group by codEst;
-declare dados cursor for select codEst, count(*) from requisicao group by codEst;
-declare somatorio cursor for select count(*) from requisicao where requisicao.estado = 'Deferido';
-
-open somatorio;
-fetch somatorio into total;
-close somatorio;
-
-open dados;
-while dados%notfound do
-	fetch dados into codigo, valor;
-    update estatistica set totalPedidos = valor where estatistica.codEst = codigo;
-END while;
-close dados;
-
-open positivo;
-while positivo%notfound do
-	fetch positivo into cod, posit;
-    update estatistica set pedidosAceitos = (posit/total) where estatistica.codEst = cod;
-end while;
-close positivo;
+UPDATE estatisticas
+Set totalPedidos = totalPedidos +1
+where estatisticas.codEst = new.codEst;
 
 END$$
-
-USE `collegiate-final`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `collegiate-final`.`requisicao_AFTER_DELETE` AFTER DELETE ON `requisicao` FOR EACH ROW
-BEGIN
-
-declare codigo, valor, cod, posit, total int;
-declare positivo cursor for select codEst, count(*) from requisicao where requisicao.estado = 'Deferido' group by codEst;
-declare dados cursor for select codEst, count(*) from requisicao group by codEst;
-declare somatorio cursor for select count(*) from requisicao where requisicao.estado = 'Deferido';
-
-open somatorio;
-fetch somatorio into total;
-close somatorio;
-
-open dados;
-while dados%notfound do
-	fetch dados into codigo, valor;
-    update estatistica set totalPedidos = valor where estatistica.codEst = codigo;
-END while;
-close dados;
-
-open positivo;
-while positivo%notfound do
-	fetch positivo into cod, posit;
-    update estatistica set pedidosAceitos = (posit/total) where estatistica.codEst = cod;
-end while;
-close positivo;
-
-END$$
-
 
 DELIMITER ;
 
