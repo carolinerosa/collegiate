@@ -73,13 +73,25 @@ ENGINE = InnoDB;
 USE `collegiate-final`;
 
 DELIMITER $$
+
 USE `collegiate-final`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `collegiate-final`.`requisicao_AFTER_INSERT` AFTER INSERT ON `requisicao` FOR EACH ROW
+CREATE DEFINER = CURRENT_USER TRIGGER `collegiate-final`.`requisicao_BEFORE_INSERT` BEFORE INSERT ON `requisicao` FOR EACH ROW
 BEGIN
 
 UPDATE estatisticas
 Set totalPedidos = totalPedidos +1
 where estatisticas.codEst = new.codEst;
+
+END$$
+
+USE `collegiate-final`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `collegiate-final`.`requisicao_BEFORE_UPDATE` BEFORE INSERT ON `requisicao` FOR EACH ROW
+BEGIN
+
+UPDATE estatisticas
+SET pedidosAceitos = pedidosAceitos +1
+WHERE estatisticas.codEst = new.codEst
+AND requisicao.estado = 'Deferido';
 
 END$$
 
