@@ -95,6 +95,18 @@ AND new.estado = 'Deferido';
 
 END$$
 
+USE `collegiate-final`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `collegiate-final`.`requisicao_BEFORE_UPDATE` BEFORE UPDATE ON `requisicao` FOR EACH ROW
+BEGIN
+
+UPDATE estatisticas
+SET pedidosAceitos = pedidosAceitos -1
+WHERE estatisticas.codEst = old.codEst
+AND old.estado = 'Deferido'
+AND new.estado <> 'Deferido';
+
+END$$
+
 DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
