@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `collegiate-final`.`requisicao` (
   `matricula` INT(10) NOT NULL,
   `codEst` INT NOT NULL,
   `justificativa` TEXT NOT NULL,
-  `estado` ENUM('Deferido', 'Indeferido', 'Não votado', 'Em análise') NOT NULL DEFAULT 'Em análise',
+  `estado` ENUM('Deferido', 'Indeferido', 'Em aberto', 'Em análise') NOT NULL DEFAULT 'Em análise',
   `dataPedido` DATE NOT NULL DEFAULT '1111-11-11',
   `dataResposta` DATE NULL,
   `historico` TEXT NOT NULL,
