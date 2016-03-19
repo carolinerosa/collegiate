@@ -91,6 +91,7 @@ BEGIN
 UPDATE estatisticas
 SET pedidosAceitos = pedidosAceitos +1
 WHERE estatisticas.codEst = new.codEst
+AND old.estado <> 'Deferido'
 AND new.estado = 'Deferido';
 
 END$$
